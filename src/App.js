@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import {
+    FooterStyledWrapper,
+    HeaderStyledWrapper,
+    PageContainerStyledWrapper
+} from "./styles/PageContainerStyledWrapper";
+import GithubCorner from "react-github-corner";
+import MainPage from "./components/pages/MainPage";
+import {BrowserRouter, Link, Route, Switch} from "react-router-dom";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <BrowserRouter>
+            <PageContainerStyledWrapper>
+                <HeaderStyledWrapper role="header">
+                    <Link data-testid="homeLink" to={"/"}><h2>Balasys homework</h2></Link>
+                    <GithubCorner href="https://github.com/NorbertRuff/balasys-project" size="60" octoColor=""
+                                  bannerColor="rgb(0, 174, 239)"/>
+                </HeaderStyledWrapper>
+                <Switch>
+                    <Route path="/" exact>
+                        <MainPage/>
+                    </Route>
+                </Switch>
+                <FooterStyledWrapper role="footer">
+                    <h4>Created by Norbert Ruff</h4>
+                </FooterStyledWrapper>
+            </PageContainerStyledWrapper>
+        </BrowserRouter>
+    );
 }
 
 export default App;
