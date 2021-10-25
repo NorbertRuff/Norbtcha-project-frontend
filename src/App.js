@@ -12,7 +12,7 @@ function App() {
         <BrowserRouter>
             <PageContainerStyledWrapper>
                 <HeaderStyledWrapper role="header">
-                    <Link data-testid="homeLink" to={"/"}><h2>Balasys homework</h2></Link>
+                    <Link data-testid="homeLink" to={"/"}><h2>Norbtcha demo</h2></Link>
                     <GithubCorner href="https://github.com/NorbertRuff/balasys-project" size="60" octoColor=""
                                   bannerColor="rgb(0, 174, 239)"/>
                 </HeaderStyledWrapper>
