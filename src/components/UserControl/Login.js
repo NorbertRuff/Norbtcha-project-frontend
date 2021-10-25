@@ -1,66 +1,59 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {Container, FormWrap, SocialContainer} from "./UserControlStyledElements";
-import {NavLink, useHistory} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import {FaFacebook, FaGoogle, FaLinkedin} from "react-icons/fa";
 import {dataHandler} from "../../services/Data_handler";
 import Swal from "sweetalert2";
-import {ErrorMessage} from "../../styles/PageContainerStyledWrapper";
-import {UserContext} from "../../context/UserContext";
+
+import CaptchaComponent from "./CaptchaComponent";
 
 
 const Login = () => {
-    const [error, setError] = useState(false)
-    const [userName, setUserName] = useState("")
-    const [password, setPassword] = useState("")
-    const {setUser} = useContext(UserContext);
-    const baseUrl = "http://localhost:8080/share-n-drive/customer-details";
+    const [form, setForm] = useState({
+        login_email: "",
+        login_password: "",
+    })
+
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
 
     function validateLoginForm() {
         return (
-            userName.length > 0 &&
-            password.length > 0
+            form.login_email.length > 0 &&
+            form.login_password.length > 0
         );
     }
 
-    function handleLoginSubmit() {
+    const handleChange = (e) => {
+        const {id, value} = e.target
+        setForm(prevState => ({
+            ...prevState,
+            [id]: value
+        }))
+    }
+
+    function formError() {
+        Swal.fire({
+            icon: "error",
+            title: 'Form not completed',
+        })
+    }
+
+    function handleLoginSubmit(e) {
+        e.preventDefault();
         if (validateLoginForm()) {
+            handleOpen();
             dataHandler._data = {
-                username: userName,
-                password: password
+                username: form.login_email,
+                password: form.login_password
             }
-            dataHandler._api_post("http://localhost:8080/auth/signin", dataHandler._data, handleData, setError);
+        } else {
+            formError();
         }
     }
 
-    const history = useHistory();
-
-    function redirect() {
-        const timer = setTimeout(() => {
-            history.push("/");
-        }, 1500);
-        return () => {
-            clearTimeout(timer)
-        };
-
-    }
-
-
-    let handleData = result => {
-        localStorage.setItem('token', result["token"]);
-        localStorage.setItem('username', result["username"]);
-        dataHandler._api_get(baseUrl, setUser, setError, undefined);
-        Swal.fire({
-            icon: 'success',
-            title: 'Login success',
-            footer: '<a href="/">Share & Drive!</a>'
-        }).then(r => redirect())
-
-    }
-
-
-    if (error) {
-        return <ErrorMessage>An error occurred while fetching information. Please try again later!</ErrorMessage>;
-    }
     return (
         <Container>
             <FormWrap>
@@ -75,15 +68,18 @@ const Login = () => {
                        id="login_email"
                        aria-describedby="emailHelp"
                        placeholder="Enter email"
-                       onChange={e => setUserName(e.target.value)}
+                       value={form.email}
+                       onChange={handleChange}
                 />
                 <input type="password"
                        id="login_password"
                        placeholder="Password"
-                       onChange={e => setPassword(e.target.value)}
+                       value={form.password}
+                       onChange={handleChange}
                 />
                 <NavLink to="/user" title="User">Forgot your password?</NavLink>
                 <button type={"button"} onClick={handleLoginSubmit}>Sign In</button>
+                <CaptchaComponent modalOpen={open} handleClose={handleClose} form={form}/>
             </FormWrap>
         </Container>
     );
